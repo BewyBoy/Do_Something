@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="borderline">3dp</dimen>
+    <dimen name="cornerRadius">20dp</dimen>
+</resources>
