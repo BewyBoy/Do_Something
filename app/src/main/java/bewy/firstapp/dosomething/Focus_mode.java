@@ -1,171 +1,127 @@
 package bewy.firstapp.dosomething;
 
-import android.content.Intent;
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.SystemClock;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.wajahatkarim3.easyflipview.EasyFlipView;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
 
-
-public class MainActivity extends AppCompatActivity {
-
-   /* private int a;*/
-
-    boolean first_time_opened;
+public class Focus_mode extends AppCompatActivity {
+    int times_left;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        setContentView(R.layout.focus_mode);
+        Button button = findViewById(R.id.button_focus);
+        TextView textView = findViewById(R.id.times_left);
+        ListView listView = findViewById(R.id.list_task);
+        ArrayList<Idea> tasks = new ArrayList<>();
+        ArrayList<String> task_string = new ArrayList<String>();
 
-        setContentView(R.layout.activity_main);
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, task_string);
+        listView.setAdapter(adapter);
 
-        MobileAds.initialize(this, initializationStatus -> {
-        });
+        SharedPreferences sharedPreferences = getSharedPreferences("GenPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        times_left = sharedPreferences.getInt("Times_left",0);
+        System.out.println( times_left);
+        textView.setText("Generate times left: "+ times_left);
 
+        button.setOnClickListener(view -> {
 
-
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
-        EasyFlipView easyFlipView = findViewById(R.id.flip);
-        easyFlipView.flipTheView();
-
-        AdView mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
-        TextView title = findViewById(R.id.title_main);
-        TextView description = findViewById(R.id.des_main);
-        ImageView image = findViewById(R.id.imageView_main);
-
-        /* TextView textView = findViewById(R.id.textView);*/
-
-        SharedPreferences sp = getSharedPreferences("GenPref", MODE_PRIVATE);
-
-        /*a = sp.getInt("a", MODE_PRIVATE);*/
-        SharedPreferences.Editor editor = sp.edit();
-
-
-
-        Button btn = findViewById(R.id.button);
-        Random random = new Random();
-        first_time_opened = true;
-
-
-
-        btn.setOnClickListener(view -> {
-            if (easyFlipView.isBackSide()) {
-                int val = random.nextInt(17);
-                if (first_time_opened){
-                    Thread thread = new Thread(() -> {
-                        for (int i = 0; i < 100; i += 1) {
-                            progressBar.incrementProgressBy(1);
-                            SystemClock.sleep(8);
-                        }
-                        SystemClock.sleep(50);
-                        progressBar.setProgress(0);
-                    });
-                    thread.start();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            easyFlipView.setVisibility(View.VISIBLE);
-                            easyFlipView.flipTheView();
-                        }
-                    }, 825);
-                    first_time_opened = false;
-                    execute(image, title, description, val);
-                    btn.setText("OK");
-                } else {
-                    execute(image, title, description, val);
-                    easyFlipView.flipTheView();
-                    btn.setText("OK");
-                }
-            } else {
-                easyFlipView.flipTheView();
-                btn.setText("GENERATE");
-            }
-            btn.setEnabled(false);
-
-            //enable button after 1000 millisecond
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                btn.setEnabled(true);
-            }, 700);
-
-        });
-
-        ImageButton imageButton = findViewById(R.id.setting);
-        imageButton.setOnClickListener(view -> {
-            System.out.println(sp.getBoolean("First_time_today", true));
-            if( sp.getBoolean("First_time_today", true)) {
-                editor.putBoolean("First_time_today", false);
-                editor.putInt("Times_left", 3);
+            if (times_left > -100){
+                popup(tasks, task_string);
+                times_left--;
+                textView.setText("Generate times left: "+ times_left);
+                editor.putInt("Times_left", times_left);
                 editor.apply();
+                adapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getApplicationContext(), "You are out of retry today", Toast.LENGTH_SHORT).show();
             }
-            Intent intent = new Intent(this, Focus_mode.class);
-            startActivity(intent);
-            finish();
+
         });
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                popup2(tasks.get(i));
+            }
+        });
     }
 
+    private void popup(ArrayList<Idea> tasks , ArrayList<String> task_str/*ArrayList<Integer> frozen , TextView textView*/) {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.pop_up_dialog);
+        dialog.setCancelable(false);
 
 
-    private void execute(ImageView image, TextView title, TextView description, int id){
-        Idea idea = interpret(id);
 
-        image.setImageResource(idea.getPic());
-        title.setText(idea.getTitle());
-        description.setText(idea.getDescription());
+        Random random = new Random();
+        int val = random.nextInt(17);
+        /*int chosen = ideasList.get(val);*/
+        /*ideasList.remove(val);
+        frozen.add(chosen);
 
+        if (frozen.size() > 5 ) {
+            ideasList.add(frozen.get(0));
+            frozen.remove(0);
+        }*/
+
+        Idea get = interpret(val);
+        tasks.add(get);
+        task_str.add(get.getTitle());
+        TextView title = dialog.findViewById(R.id.title_popup);
+        title.setText(get.getTitle());
+        TextView description = dialog.findViewById(R.id.des_popup);
+        description.setText(Html.fromHtml(get.getDescription()));
+        ImageView imageView = dialog.findViewById(R.id.image);
+        imageView.setImageResource(get.getPic());
+
+        dialog.show();
+        Button btnClose = dialog.findViewById(R.id.close);
+        btnClose.setOnClickListener(view -> {
+            dialog.dismiss();
+            /*textView.setText("Last Generated: \t" + chosen.getTitle());*/
+        });
+    }
+    private void popup2(Idea get){
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.pop_up_dialog);
+        dialog.setCancelable(false);
+        TextView title = dialog.findViewById(R.id.title_popup);
+        title.setText(get.getTitle());
+        TextView description = dialog.findViewById(R.id.des_popup);
+        description.setText(Html.fromHtml(get.getDescription()));
+        ImageView imageView = dialog.findViewById(R.id.image);
+        imageView.setImageResource(get.getPic());
+        dialog.show();
+        Button btnClose = dialog.findViewById(R.id.close);
+        btnClose.setOnClickListener(view -> {
+            dialog.dismiss();
+            /*textView.setText("Last Generated: \t" + chosen.getTitle());*/
+        });
     }
 
-
-
-
-
-
-
-    /*
-
-        private void showStartDialog() {
-            tutorial();
-            a = 3;
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putBoolean("First_time", false);
-            editor.apply();
-        }
-
-        private void tutorial() {
-            new AlertDialog.Builder(this)
-                    .setTitle("Hello")
-                    .setMessage("this is a one time thing")
-                    .create().show();
-        }
-    */
     private Idea interpret(int id){
         Random random2 = new Random();
         new Idea("", 0);

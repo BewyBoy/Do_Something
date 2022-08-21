@@ -174,15 +174,15 @@
 
     </com.wajahatkarim3.easyflipview.EasyFlipView>
 
-    <!--<ImageButton
-        android:id="@+id/imageButton"
+    <ImageButton
+        android:id="@+id/setting"
         android:layout_width="48dp"
         android:layout_height="51dp"
-        android:contentDescription="Something"
+        android:contentDescription="Setting_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_setting_foreground"
-        />-->
+        />
 
 
     <!--
