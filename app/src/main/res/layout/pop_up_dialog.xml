@@ -19,12 +19,12 @@
             android:layout_alignEnd="@+id/white_block"
             android:layout_alignParentStart="true"
 
-            android:background="#C6C6C6"
+            android:background="@drawable/xml_roundedcorner"
 
             android:padding="10dp"
-            android:layout_margin="@dimen/borderline"
+
             android:text="Title"
-            android:textColor="@color/black"
+            android:textColor="@color/design_default_color_on_primary"
             android:textSize="20sp"
             android:textStyle="bold"
             />
@@ -34,8 +34,12 @@
             android:layout_width="match_parent"
             android:layout_height="175sp"
             android:layout_below="@+id/title_popup"
+            android:layout_marginStart="@dimen/borderline"
+            android:layout_marginTop="@dimen/borderline"
+            android:layout_marginEnd="@dimen/borderline"
+            android:layout_marginBottom="@dimen/borderline"
             android:adjustViewBounds="true"
-            android:scaleType="fitEnd"/>
+            android:scaleType="fitEnd" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,7 +57,8 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="5dp"
             android:text="OK!"
-            android:id="@+id/close"/>
+            android:id="@+id/close"
+            />
 
 
 </RelativeLayout>

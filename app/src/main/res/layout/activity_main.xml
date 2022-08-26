@@ -7,44 +7,6 @@
     tools:context=".MainActivity"
     android:id="@+id/main"
     >
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintBottom_toBottomOf="@+id/adView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13"
-        tools:srcCompat="@mipmap/head"
-        android:id="@+id/head"/>
-
-    <!--<TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--<ImageView
-        android:id="@+id/imageView"
-        android:layout_width="208dp"
-        android:layout_height="264dp"
-        android:layout_marginStart="141dp"
-        android:layout_marginTop="179dp"
-        android:layout_marginEnd="142dp"
-        android:layout_marginBottom="164dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars"
-        android:contentDescription="Last Activity"/>-->
-
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
@@ -81,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:layout_margin="30dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:id="@+id/progress_bar"
         android:progress="0"
         android:max="100"
@@ -110,7 +72,6 @@
         app:flipFrom="right"
         android:visibility="invisible"
         >
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -118,27 +79,22 @@
 
                 android:orientation="vertical"
                 android:padding="@dimen/borderline"
-                android:visibility="visible"
+
 
                 />
-
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
-
             android:background="@drawable/card_layout"
             android:orientation="vertical"
             android:padding="@dimen/borderline"
-            android:visibility="visible"
 
             >
             <ImageView
                 android:id="@+id/imageView_main"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-
                 android:background="@drawable/image_rounded_corner"
                 android:padding="@dimen/borderline"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -166,8 +122,6 @@
                 android:text="Description"
                 android:textSize="20sp"
                 android:textStyle="normal"
-
-
                 />
 
         </LinearLayout>
@@ -183,18 +137,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_setting_foreground"
         />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-
-    <!--
-        <com.google.android.material.navigation.NavigationView
-            android:layout_width="150dp"
-            android:layout_height="match_parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:menu="@menu/navigation_drawer"
-            app:headerLayout="@layout/header_for_menu"
-            android:id="@+id/navigation"
-
-            />
-    -->
+        app:layout_constraintBottom_toBottomOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13"
+        tools:srcCompat="@mipmap/head"
+        android:id="@+id/head"
+        android:contentDescription="TODO" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

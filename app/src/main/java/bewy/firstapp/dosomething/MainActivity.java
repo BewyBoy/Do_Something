@@ -1,5 +1,6 @@
 package bewy.firstapp.dosomething;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,7 +14,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,10 +25,9 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -75,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
         first_time_opened = true;
 
 
-
         btn.setOnClickListener(view -> {
             if (easyFlipView.isBackSide()) {
                 int val = random.nextInt(17);
                 if (first_time_opened){
+                    progressBar.setVisibility(View.VISIBLE);
                     Thread thread = new Thread(() -> {
                         for (int i = 0; i < 100; i += 1) {
                             progressBar.incrementProgressBy(1);
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                             easyFlipView.flipTheView();
                         }
                     }, 825);
+                    /*header.setVisibility(View.INVISIBLE);*/
                     first_time_opened = false;
                     execute(image, title, description, val);
                     btn.setText("OK");
@@ -119,15 +122,8 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton imageButton = findViewById(R.id.setting);
         imageButton.setOnClickListener(view -> {
-            System.out.println(sp.getBoolean("First_time_today", true));
-            if( sp.getBoolean("First_time_today", true)) {
-                editor.putBoolean("First_time_today", false);
-                editor.putInt("Times_left", 3);
-                editor.apply();
-            }
-            Intent intent = new Intent(this, Focus_mode.class);
-            startActivity(intent);
-            finish();
+            setting(sp, editor);
+
         });
 
     }
@@ -136,43 +132,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void execute(ImageView image, TextView title, TextView description, int id){
         Idea idea = interpret(id);
-
+        System.out.println(idea.toString());
         image.setImageResource(idea.getPic());
         title.setText(idea.getTitle());
         description.setText(idea.getDescription());
 
     }
 
-
-
-
-
-
-
-    /*
-
-        private void showStartDialog() {
-            tutorial();
-            a = 3;
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putBoolean("First_time", false);
-            editor.apply();
-        }
-
-        private void tutorial() {
-            new AlertDialog.Builder(this)
-                    .setTitle("Hello")
-                    .setMessage("this is a one time thing")
-                    .create().show();
-        }
-    */
     private Idea interpret(int id){
         Random random2 = new Random();
-        new Idea("", 0);
         Idea result;
         switch (id) {
             case 1:
-                result = new Idea("Draw something",  R.mipmap.draw,1);
+                result = new Idea("Draw something",  R.mipmap.draw);
                 String[] draw_this = {"a cat that is a wizard", "sir dog Lancelot", "a cool unicorn", "a magical sword",
                         "a funny interpretation of amongus", "the sky full of clouds", "a flower", "a bottle of water",
                         "an interesting set of clothes"};
@@ -181,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                         "In case you don't know what to draw, let's draw " + object);
                 break;
             case 2:
-                result = new Idea("Watch something", R.mipmap.film,2);
+                result = new Idea("Watch something", R.mipmap.film);
                 String[] watch_this = {"Harry Potter", "Avenger","When Harry met Sally", "John Wick",
                         "Spider-man: Into the SpiderVerse", "The silence of the Lambs", "Inside out", "Howl and the moving castle",
                         "Now you see me"};
@@ -189,14 +161,14 @@ public class MainActivity extends AppCompatActivity {
                 result.setDescription("My film suggestion for today is: \n "+ film);
                 break;
             case 3:
-                result = new Idea("Play a game", R.mipmap.play,3);
+                result = new Idea("Play a game", R.mipmap.play);
 
                 String[] lets_game = {"amogus"};
                 String game = lets_game[random2.nextInt(lets_game.length)];
                 result.setDescription("Let's play "+ game + " and have some fun!");
                 break;
             case 4:
-                result = (new Idea("Exercise", R.mipmap.exercise,4));
+                result = new Idea("Exercise", R.mipmap.exercise);
 
                 String[] exercises = {"go for a run", "do 20 jump jack", "do 10 crunch", "stretch your body"};
                 String exercise = exercises[random2.nextInt(exercises.length)];
@@ -204,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                         exercise);
                 break;
             case 5:
-                result = (new Idea("Cooking" ,R.mipmap.cook, 5));
+                result = new Idea("Cooking" ,R.mipmap.cook);
 
                 String[] cooking = {"French Omelette", "Fried Rice", "Fried Noodle", "French Fries", "Grilled Cheese",
                         "Roast Chicken (Tip: use oyster sauce!)", "Marshmallow (actually more simple than you thought)",
@@ -216,12 +188,12 @@ public class MainActivity extends AppCompatActivity {
                         "waste too much food!");
                 break;
             case 6:
-                result = (new Idea("Text/Call a friend", R.mipmap.call, 6));
+                result = new Idea("Text/Call a friend", R.mipmap.call);
 
                 result.setDescription("Talk to your mom. She would love to hear from you.");
                 break;
             case 7:
-                result = (new Idea("Cleaning!",R.mipmap.clean,7));
+                result = new Idea("Cleaning!",R.mipmap.clean);
 
                 String[] house_work = {"cleaning your bookshelves. Give them a good wipe.",
                         "rearranging your kitchen. Put your spices into jars and wipe up the spilled waste in your cabinets. Hygiene is BIG for your health.",
@@ -232,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                         "Let's start with "+ work);
                 break;
             case 8:
-                result = (new Idea("Go somewhere", R.mipmap.go_out,8));
+                result = new Idea("Go somewhere", R.mipmap.go_out);
 
                 String[] places = {"the park and breath some fresh air!",
                         "the museum and learn about art or history",
@@ -249,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                 result.setDescription("It's a good idea to know your own city. Go to " + place);
                 break;
             case 9:
-                result = (new Idea("Read a book", R.mipmap.read,9));
+                result = new Idea("Read a book", R.mipmap.read);
 
                 String[] books = {"The Black Tulip (Alexandre Dumas)", "The Rosie Project (Graeme Simsion)",
                         "Da Vinci Code (Dan Brown)", "If Only It Were True (Marc Levy)", "Proof (Dick Francis)"};
@@ -265,13 +237,13 @@ public class MainActivity extends AppCompatActivity {
                 break;
                 */
             case 11:
-                result = (new Idea("Rest","Just sit down and breath", R.mipmap.rest,11));
+                result = (new Idea("Rest","Just sit down and breath", R.mipmap.rest));
                 break;
             case 12:
-                result = (new Idea("Continue!", "Do you have any project of your own? Let's get back to it", R.mipmap.continuee, 12));
+                result = (new Idea("Continue!", "Do you have any project of your own? Let's get back to it", R.mipmap.continuee));
                 break;
             case 13:
-                result = (new Idea("Plan your day", "See if you want to do something today", R.mipmap.planning, 13));
+                result = (new Idea("Plan your day", "See if you want to do something today", R.mipmap.planning));
                 break;
 
             /*
@@ -293,14 +265,58 @@ public class MainActivity extends AppCompatActivity {
                 idea.setDescription("Learn juggle");
                 break;*/
             case 17:
-                result = (new Idea("Be a creator!",R.mipmap.create ,17));
+                result = (new Idea("Be a creator!",R.mipmap.create));
 
                 result.setDescription("Write a script, make a beat, get your friend to do a sketch you made," +
                         " time to start being creative and have fun with your imagination");
                 break;
             default:
-                result = new Idea("zzz", 20);
+                result = new Idea();
         }
         return result;
     }
+
+    private void setting(SharedPreferences sp, SharedPreferences.Editor editor){
+
+        Dialog menu = new Dialog(this);
+        menu.setContentView(R.layout.menu);
+
+        RadioGroup radio = menu.findViewById(R.id.radio_group);
+        Button cancel = menu.findViewById(R.id.cancel);
+        Button apply = menu.findViewById(R.id.apply);
+        AtomicInteger mode = new AtomicInteger();
+        menu.show();
+        radio.setOnCheckedChangeListener((radioGroup, i) -> {
+            switch (i){
+                case R.id.normal_mode:
+                    break;
+                case R.id.focus_mode:
+                    Toast.makeText(this,R.string.warning, Toast.LENGTH_SHORT).show();
+                    mode.set(1);
+                    break;
+            }
+
+        });
+        apply.setOnClickListener(view -> {
+            if (mode.get() == 1){
+                toFocus(sp, editor);
+            }
+            menu.dismiss();
+        });
+        cancel.setOnClickListener(view -> menu.dismiss());
+
+    }
+
+    private void toFocus(SharedPreferences sp, SharedPreferences.Editor editor){
+        System.out.println(sp.getBoolean("First_time_today", true));
+        if( sp.getBoolean("First_time_today", true)) {
+            editor.putBoolean("First_time_today", false);
+            editor.putInt("Times_left", 3);
+            editor.apply();
+        }
+        Intent intent = new Intent(this, Focus_mode.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

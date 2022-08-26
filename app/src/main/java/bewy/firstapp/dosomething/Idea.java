@@ -1,38 +1,34 @@
 package bewy.firstapp.dosomething;
 
+
 public class Idea {
     private String title;
     private String description;
     private int pic;
-    private int id;
 
-    public Idea(String title, String description, int pic, int id) {
+    public Idea() {
+        this.title = "zzz";
+        this.description = "description";
+        this.pic = R.mipmap.kite2;
+    }
+
+    public Idea(String title) {
+        this.title = title;
+    }
+
+    public Idea(String title, int pic) {
+        this.title = title;
+        this.pic = pic;
+    }
+    public Idea(String title, String description, int pic) {
         this.title = title;
         this.description = description;
         this.pic = pic;
-        this.id = id;
     }
 
-    public Idea(String title, int pic, int id) {
-        this.title = title;
-        this.description = "description";
+    public void setDescriptionAndPic(String description, int pic) {
+        this.description = description;
         this.pic = pic;
-        this.id = id;
-    }
-
-    public Idea(String title, int id) {
-        this.title = title;
-        this.description = "description";
-        this.pic = R.mipmap.kite2;
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -61,5 +57,8 @@ public class Idea {
         this.description = description;
     }
 
-
+    @Override
+    public String toString() {
+        return title + "/" + description + "/" ;
+    }
 }

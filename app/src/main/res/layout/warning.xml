@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/card_layout">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Warning!"
+        android:textStyle="bold"
+        android:textColor="@color/design_default_color_on_primary"
+        android:id="@+id/bla"
+        android:background="@drawable/xml_roundedcorner"
+        android:textAlignment="center"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bla"
+        android:text="@string/warning"
+        android:textColor="@color/black"
+        android:padding="10dp"
+        android:id="@+id/blo"
+        android:textSize="15dp"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/blo"
+        android:padding="10dp"
+        android:text="OK"
+        android:textSize="15dp"
+        style="@style/Widget.Material3.Button.TextButton"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
