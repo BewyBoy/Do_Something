@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,25 +37,28 @@ import java.nio.file.FileVisitOption;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Focus_mode extends AppCompatActivity {
     int times_left;
     private final static String FILE_NAME = "current_save";
-
+    ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //ADS:
-        /*MobileAds.initialize(this, initializationStatus -> {
-        });
-        AdView mAdView = findViewById(R.id.adView_focus);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);*/
-        //END
+
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.focus_mode);
+
+        //ADS:
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+        AdView mAdView = findViewById(R.id.adView_focus);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        //END
         Button button = findViewById(R.id.button_focus);
         TextView textView = findViewById(R.id.times_left);
         ListView listView = findViewById(R.id.list_task);
@@ -63,12 +67,13 @@ public class Focus_mode extends AppCompatActivity {
         ArrayList<Integer> frozen = new ArrayList<>();
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_expandable_list_item_1, task_string);
         listView.setAdapter(adapter);
-        /*ImageView imageView = findViewById(R.id.head_focus);
-        imageView.setImageResource(R.mipmap.head);*/
+       /* ImageView*/ imageView = findViewById(R.id.head_focus);
+        imageView.setImageResource(R.mipmap.head_focus);
 
         SharedPreferences sharedPreferences = getSharedPreferences("GenPref", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        times_left = sharedPreferences.getInt("Times_left",0);
+        //TODO
+        times_left = sharedPreferences.getInt("Times_left",0);;
         boolean isNotLocked = sharedPreferences.getBoolean("First_time_today", true);
         if (!isNotLocked){
             int i = 0;
@@ -77,7 +82,6 @@ public class Focus_mode extends AppCompatActivity {
                 Idea past_idea = stringToIdea(past);
                 tasks.add(past_idea);
                 task_string.add(past_idea.getTitle());
-                System.out.println(tasks.size());
                 i++;
             }
         }
@@ -95,18 +99,17 @@ public class Focus_mode extends AppCompatActivity {
                 editor.putInt("Times_left", times_left);
                 editor.apply();
                 adapter.notifyDataSetChanged();
-                save(saved + getResources().getResourceEntryName(saved.getPic()), times_left);
+                save(getResources().getResourceEntryName(saved.getPic()) + saved, times_left);
+
             } else {
                 Toast.makeText(getApplicationContext(), "You are out of retry today", Toast.LENGTH_SHORT).show();
+
             }
         });
         listView.setOnItemClickListener((adapterView, view, i, l) -> popup2(tasks.get(i)));
         ImageButton imageButton = findViewById(R.id.setting2);
         imageButton.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-
+            setting(sharedPreferences, editor);
         });
     }
     private Idea popup(ArrayList<Idea> tasks , ArrayList<String> task_str, ArrayList<Integer> frozen) {
@@ -122,10 +125,9 @@ public class Focus_mode extends AppCompatActivity {
         String[] titles = {"Draw something", "Watch something", "Play a game", "Exercise", "Cooking", "Text/Call a friend",
                 "Cleaning!", "Go somewhere","Read a book","Rest", "Continue!","Plan your day"};
         int val = random.nextInt(titles.length);
-        System.out.println(val);
+
         while (frozen.contains(val)) {
             val = random.nextInt(titles.length);
-            System.out.println(val);
         }
         frozen.add(val);
         Idea get = interpret(titles[val]);;
@@ -177,7 +179,7 @@ public class Focus_mode extends AppCompatActivity {
                         "a funny interpretation of amongus", "the sky full of clouds", "a flower", "a bottle of water",
                         "an interesting set of clothes"};
                 String object = draw_this[random2.nextInt(draw_this.length)];
-                result.setDescription("Take off your mind by drawing something. Don't pressure yourself to make it look perfect, everything has beauty in its own way." +
+                result.setDescription("Take off your mind by drawing something." +
                         "In case you don't know what to draw, let's draw " + object);
                 break;
             case "Watch something":
@@ -265,6 +267,7 @@ public class Focus_mode extends AppCompatActivity {
                 */
             case "Rest":
                 result.setPic(R.mipmap.rest);
+                result.setDescription("go to sleep");
                 break;
             case "Continue!":
                 result.setDescriptionAndPic("Do you have any project of your own? Let's get back to it", R.mipmap.continuee);
@@ -339,17 +342,43 @@ public class Focus_mode extends AppCompatActivity {
                 }
             }
         }
-
         return res;
     }
     private Idea stringToIdea(String string){
-        String[] strings = string.split("/");
+        String[] strings = string.split("\t");
         if (strings.length != 3){
             return new Idea();
         } else{
-            int imageId = this.getResources().getIdentifier(strings[2], "mipmap", this.getPackageName());
-            return new Idea( strings[0], strings[1], imageId);
+            int imageId = this.getResources().getIdentifier(strings[0], "mipmap", this.getPackageName());
+            return new Idea( strings[1], strings[2], imageId);
         }
     }
 
+    private void setting(SharedPreferences sp, SharedPreferences.Editor editor){
+
+        Dialog menu = new Dialog(this);
+        menu.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        menu.setContentView(R.layout.menu_focus);
+
+        RadioGroup radio = menu.findViewById(R.id.radio_group);
+        Button cancel = menu.findViewById(R.id.cancel);
+        Button apply = menu.findViewById(R.id.apply);
+        AtomicInteger mode = new AtomicInteger();
+        menu.show();
+        radio.setEnabled(false);
+
+        apply.setOnClickListener(view -> {
+            if (mode.get() == 1){
+                toMain(sp, editor);
+            }
+            menu.dismiss();
+        });
+        cancel.setOnClickListener(view -> menu.dismiss());
+
+    }
+    private void toMain(SharedPreferences sp, SharedPreferences.Editor editor){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

@@ -59,6 +59,6 @@ public class Idea {
 
     @Override
     public String toString() {
-        return title + "/" + description + "/" ;
+        return "\t" + title + "\t" + description;
     }
 }

@@ -9,16 +9,14 @@
         android:id="@+id/head_focus"
         android:layout_width="match_parent"
 
-        android:layout_height="wrap_content"
-        android:layout_marginTop="104dp"
-        android:contentDescription="TODO"
-        app:layout_constraintBottom_toBottomOf="@+id/adView"
+        android:layout_height="200dp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/adView_focus"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.13"
-        tools:srcCompat="@mipmap/head" />
+        tools:srcCompat="@mipmap/head_focus" />
 
     <Button
         android:id="@+id/button_focus"
@@ -31,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-
+        android:backgroundTint="#00aeef"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.86" />
@@ -58,14 +56,28 @@
     <ListView
 
         android:id="@+id/list_task"
-        android:layout_width="409dp"
-        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
         android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_focus"
+
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/head_focus" />
+        app:layout_constraintTop_toBottomOf="@+id/generated_task"/>
+    <TextView
+        android:id="@+id/generated_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/list_task"
+        app:layout_constraintTop_toBottomOf="@id/head_focus"
+        android:textAlignment="center"
+        android:text="GENERATED TASKS"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:textColor="@color/focus_blue"
+        android:visibility="visible"
+
+            />
 
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"

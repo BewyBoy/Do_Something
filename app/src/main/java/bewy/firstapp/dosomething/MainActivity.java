@@ -3,10 +3,13 @@ package bewy.firstapp.dosomething;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
    /* private int a;*/
 
-    boolean first_time_opened;
+    boolean first_time_opened, isFirst_time_opened_menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +65,13 @@ public class MainActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.title_main);
         TextView description = findViewById(R.id.des_main);
         ImageView image = findViewById(R.id.imageView_main);
-
-        /* TextView textView = findViewById(R.id.textView);*/
+        ImageView header = findViewById(R.id.head);
+        header.setImageResource(R.mipmap.head);
 
         SharedPreferences sp = getSharedPreferences("GenPref", MODE_PRIVATE);
-
-        /*a = sp.getInt("a", MODE_PRIVATE);*/
         SharedPreferences.Editor editor = sp.edit();
 
-
+        isFirst_time_opened_menu = true;
 
         Button btn = findViewById(R.id.button);
         Random random = new Random();
@@ -79,7 +80,11 @@ public class MainActivity extends AppCompatActivity {
 
         btn.setOnClickListener(view -> {
             if (easyFlipView.isBackSide()) {
-                int val = random.nextInt(17);
+
+                String[] titles = {"Draw something", "Watch something", "Play a game", "Exercise", "Cooking", "Text/Call a friend",
+                        "Cleaning!", "Go somewhere","Read a book","Rest", "Continue!","Plan your day"};
+                int val = random.nextInt(titles.length);
+                String get = titles[val];
                 if (first_time_opened){
                     progressBar.setVisibility(View.VISIBLE);
                     Thread thread = new Thread(() -> {
@@ -98,12 +103,12 @@ public class MainActivity extends AppCompatActivity {
                             easyFlipView.flipTheView();
                         }
                     }, 825);
-                    /*header.setVisibility(View.INVISIBLE);*/
+                    header.setVisibility(View.INVISIBLE);
                     first_time_opened = false;
-                    execute(image, title, description, val);
+                    execute(image, title, description, get);
                     btn.setText("OK");
                 } else {
-                    execute(image, title, description, val);
+                    execute(image, title, description, get);
                     easyFlipView.flipTheView();
                     btn.setText("OK");
                 }
@@ -130,83 +135,115 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void execute(ImageView image, TextView title, TextView description, int id){
+    private void execute(ImageView image, TextView title, TextView description, String id){
+        System.out.println(id);
         Idea idea = interpret(id);
         System.out.println(idea.toString());
         image.setImageResource(idea.getPic());
         title.setText(idea.getTitle());
-        description.setText(idea.getDescription());
+        description.setText(Html.fromHtml(idea.getDescription()));
 
     }
 
-    private Idea interpret(int id){
+    private Idea interpret(String category){
         Random random2 = new Random();
-        Idea result;
-        switch (id) {
-            case 1:
-                result = new Idea("Draw something",  R.mipmap.draw);
-                String[] draw_this = {"a cat that is a wizard", "sir dog Lancelot", "a cool unicorn", "a magical sword",
-                        "a funny interpretation of amongus", "the sky full of clouds", "a flower", "a bottle of water",
+
+        Idea result = new Idea(category);
+        String[] list;
+        String object;
+
+        switch (category) {
+            case "Draw something":
+                result.setPic(R.mipmap.draw);
+                list = new String[]{"a cat that is a wizard", "sir dog Lancelot", "a cool unicorn", "a magical sword"
+                        , "the sky full of clouds", "a flower", "a bottle of water",
                         "an interesting set of clothes"};
-                String object = draw_this[random2.nextInt(draw_this.length)];
-                result.setDescription("Take off your mind by drawing something. Don't pressure yourself to make it look perfect, everything has beauty in its own way." +
+                object = list[random2.nextInt(list.length)];
+                result.setDescription("Take off your mind by drawing something." +
                         "In case you don't know what to draw, let's draw " + object);
                 break;
-            case 2:
-                result = new Idea("Watch something", R.mipmap.film);
-                String[] watch_this = {"Harry Potter", "Avenger","When Harry met Sally", "John Wick",
+            case "Watch a movie":
+                result.setPic(R.mipmap.film);
+                list = new String[]{"Harry Potter", "Avenger", "When Harry met Sally", "John Wick",
                         "Spider-man: Into the SpiderVerse", "The silence of the Lambs", "Inside out", "Howl and the moving castle",
                         "Now you see me"};
-                String film = "<b>" + watch_this[random2.nextInt(watch_this.length)] + "</b> ";
-                result.setDescription("My film suggestion for today is: \n "+ film);
+                object = "<b>" + list[random2.nextInt(list.length)] + "</b> ";
+                result.setDescription("My movie suggestion for today is: \n "+ object);
                 break;
-            case 3:
-                result = new Idea("Play a game", R.mipmap.play);
+            case "Play a game":
+                result.setPic(R.mipmap.play);
 
-                String[] lets_game = {"amogus"};
-                String game = lets_game[random2.nextInt(lets_game.length)];
-                result.setDescription("Let's play "+ game + " and have some fun!");
+                list = new String[]{
+                        "Roaring Streets\n" + "https://cottontrek.itch.io/roaring-streets",
+                        "Vintage Flashlight\n" +"https://dylsdestiny.itch.io/vintage-flashlight",
+                "AAAAA!!!\n" +
+                        "https://bynine.itch.io/aaaaa ",
+                "A Slime’s Quest for Freedom\n"+ "https://hrgames.itch.io/a-slimes-quest-for-freedom",
+                "Geflect\n" +
+                        "https://gaziter.itch.io/geflectgame",
+                "Magnetic\n" +
+                        "https://prodigalson.itch.io/magnetic\n",
+                "Orbital Punch\n"+"https://ubertuber.itch.io/orbital-punch",
+                "Barrage \n" +
+                        "https://kano-stuff.itch.io/-barrage-",
+                "Delta\n" +
+                        "https://culturebosh.itch.io/delta",
+                "Plover Parent\nhttps://albatrosssoup.itch.io/plover-parent",
+                "Oeufwakening\n https://quentindelvallet.itch.io/oeufwakening",
+                "Stuck Recoil \nhttps://matheuscunegato.itch.io/stuck-recoil",
+                "ODA\n" +
+                        "https://sicerat.itch.io/oda",
+                "Void\n" +
+                        "https://nicmagnier.itch.io/void",
+                "HOPSHOT\n" +
+                        "https://bearishmushroom.itch.io/hopshot",
+                "powerCore\n" +
+                        "https://sanjeev.itch.io/powercore",
+                "Lockstep\n" +
+                        "https://aioob.itch.io/lockstep",
+                "Resize\n" +
+                        "https://zorro-svardendahl.itch.io/resize",
+                "SuperFunkyLightShow\n https://owensenior.itch.io/superfunkylightshow"};
+                object = list[random2.nextInt(list.length)];
+                result.setDescription("Let's play "+ object + " and have some fun!");
                 break;
-            case 4:
-                result = new Idea("Exercise", R.mipmap.exercise);
+            case "Exercise":
+                result.setPic(R.mipmap.exercise);
 
-                String[] exercises = {"go for a run", "do 20 jump jack", "do 10 crunch", "stretch your body"};
-                String exercise = exercises[random2.nextInt(exercises.length)];
+                list = new String[]{"go for a run", "do 20 jump jack", "do 10 crunch", "stretch your body"};
+                object = list[random2.nextInt(list.length)];;
                 result.setDescription("Time to get your blood flowing, by doing some exercises. Let's " +
-                        exercise);
+                        object);
                 break;
-            case 5:
-                result = new Idea("Cooking" ,R.mipmap.cook);
+            case "Cooking":
+                result.setPic(R.mipmap.cook);
 
-                String[] cooking = {"French Omelette", "Fried Rice", "Fried Noodle", "French Fries", "Grilled Cheese",
+                list = new String[]{"French Omelette", "Fried Rice", "Fried Noodle", "French Fries", "Grilled Cheese",
                         "Roast Chicken (Tip: use oyster sauce!)", "Marshmallow (actually more simple than you thought)",
                         "Honeycomb candy", "Vegetable soup with herbs", "Cream based soup"};
-                String food = cooking[random2.nextInt(cooking.length)];
+                object = list[random2.nextInt(list.length)];
                 result.setDescription("Let's practice your" +
-                        " skill and make it perfect by making some "+ food + ".\nIf you are new, a " +
-                        "good tip is cook in small amount so that if you make a mistake, you don't " +
-                        "waste too much food!");
+                        " skill and make it perfect by making some "+ object + ".");
                 break;
-            case 6:
-                result = new Idea("Text/Call a friend", R.mipmap.call);
-
+            case "Text/Call a friend":
+                result.setPic(R.mipmap.call);
                 result.setDescription("Talk to your mom. She would love to hear from you.");
                 break;
-            case 7:
-                result = new Idea("Cleaning!",R.mipmap.clean);
+            case "Cleaning!":
+                result.setPic(R.mipmap.clean);
 
-                String[] house_work = {"cleaning your bookshelves. Give them a good wipe.",
-                        "rearranging your kitchen. Put your spices into jars and wipe up the spilled waste in your cabinets. Hygiene is BIG for your health.",
+                list = new String[]{"cleaning your bookshelves. Give them a good wipe.",
+                        "rearranging your kitchen. Put your spices into jars and wipe up the spilled waste in your cabinets.",
                         "sweeping and mopping the floor. No more dust on your feet!",
                 };
-                String work = house_work[random2.nextInt(house_work.length)];
+                object = list[random2.nextInt(list.length)];
                 result.setDescription("Clean up your place. Being clean keep you healthy and productive! \n" +
-                        "Let's start with "+ work);
+                        "Let's start with "+ object);
                 break;
-            case 8:
-                result = new Idea("Go somewhere", R.mipmap.go_out);
+            case "Go somewhere":
+                result.setPic(R.mipmap.go_out);
 
-                String[] places = {"the park and breath some fresh air!",
+                list = new String[]{"the park and breath some fresh air!",
                         "the museum and learn about art or history",
                         "the cinema and watch a movie at a big screen. Get your friends and have a good time",
                         "the zoo, see the animals and feed them if you can. Support the wildlife!",
@@ -217,18 +254,18 @@ public class MainActivity extends AppCompatActivity {
                                 "around",
                         "a shopping mall. Window-shopping is fun! And there might be an arcade in there",
                         "the park! Have some alone time and see everyone around you."};
-                String place = places[random2.nextInt(places.length)];
-                result.setDescription("It's a good idea to know your own city. Go to " + place);
+                object = list[random2.nextInt(list.length)];
+                result.setDescription("It's a good idea to know your own city. Go to " + object);
                 break;
-            case 9:
-                result = new Idea("Read a book", R.mipmap.read);
+            case "Read a book":
+                result.setPic(R.mipmap.read);
 
-                String[] books = {"The Black Tulip (Alexandre Dumas)", "The Rosie Project (Graeme Simsion)",
+                list = new String[]{"The Black Tulip (Alexandre Dumas)", "The Rosie Project (Graeme Simsion)",
                         "Da Vinci Code (Dan Brown)", "If Only It Were True (Marc Levy)", "Proof (Dick Francis)"};
-                String book = books[random2.nextInt(books.length)];
+                object = list[random2.nextInt(list.length)];;
                 result.setDescription("If you haven't read a book in a while, it might be hard to concentrate." +
                         " If that's the case, try to read 10 pages and you can rest.\n" +
-                        "My book suggestion for today is: " + book);
+                        "My book suggestion for today is: " + object);
                 break;
             /*case 10:
                 ideasList.add(new Idea("Listen to music", 10));
@@ -236,14 +273,15 @@ public class MainActivity extends AppCompatActivity {
             idea.setDescription("I like planet her of Doja");
                 break;
                 */
-            case 11:
-                result = (new Idea("Rest","Just sit down and breath", R.mipmap.rest));
+            case "Rest":
+                result.setPic(R.mipmap.rest);
+                result.setDescription("Time to take a nap");
                 break;
-            case 12:
-                result = (new Idea("Continue!", "Do you have any project of your own? Let's get back to it", R.mipmap.continuee));
+            case "Continue!":
+                result.setDescriptionAndPic("Do you have any project of your own? Let's get back to it", R.mipmap.continuee);
                 break;
-            case 13:
-                result = (new Idea("Plan your day", "See if you want to do something today", R.mipmap.planning));
+            case "Plan your day":
+                result.setDescriptionAndPic( "See if you want to do something today", R.mipmap.planning);
                 break;
 
             /*
@@ -264,14 +302,15 @@ public class MainActivity extends AppCompatActivity {
 
                 idea.setDescription("Learn juggle");
                 break;*/
-            case 17:
-                result = (new Idea("Be a creator!",R.mipmap.create));
+            /*case 17:
+                result = (new Idea("Be a creator!",R.mipmap.create ,17));
 
                 result.setDescription("Write a script, make a beat, get your friend to do a sketch you made," +
                         " time to start being creative and have fun with your imagination");
-                break;
+                break;*/
             default:
                 result = new Idea();
+                break;
         }
         return result;
     }
@@ -279,8 +318,9 @@ public class MainActivity extends AppCompatActivity {
     private void setting(SharedPreferences sp, SharedPreferences.Editor editor){
 
         Dialog menu = new Dialog(this);
+        menu.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         menu.setContentView(R.layout.menu);
-
+        menu.setCancelable(false);
         RadioGroup radio = menu.findViewById(R.id.radio_group);
         Button cancel = menu.findViewById(R.id.cancel);
         Button apply = menu.findViewById(R.id.apply);
@@ -291,8 +331,12 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.normal_mode:
                     break;
                 case R.id.focus_mode:
-                    Toast.makeText(this,R.string.warning, Toast.LENGTH_SHORT).show();
+                    if (isFirst_time_opened_menu) {
+                        Toast.makeText(this, R.string.warning, Toast.LENGTH_LONG).show();
+                        isFirst_time_opened_menu = false;
+                    }
                     mode.set(1);
+
                     break;
             }
 

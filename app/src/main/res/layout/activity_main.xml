@@ -7,6 +7,18 @@
     tools:context=".MainActivity"
     android:id="@+id/main"
     >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+
+        app:layout_constraintBottom_toBottomOf="@+id/adView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.13"
+        tools:srcCompat="@mipmap/head"
+        android:id="@+id/head"
+        android:contentDescription="TODO" />
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
@@ -137,17 +149,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_setting_foreground"
         />
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        app:layout_constraintBottom_toBottomOf="@+id/adView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.13"
-        tools:srcCompat="@mipmap/head"
-        android:id="@+id/head"
-        android:contentDescription="TODO" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

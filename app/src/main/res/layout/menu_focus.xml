@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_layout">
+    android:background="@drawable/card_layout_blue">
 
     <TextView
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:id="@+id/menu"
         android:textAlignment="center"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/xml_roundedcorner"
+        android:background="@drawable/xml_roundedcorner_blue"
         android:padding="5dp"
         android:textSize="20sp"
         />
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/borderline"
-            android:background="@color/purple_200"
+            android:background="@color/secondary_blue"
             android:paddingVertical="2dp"
             android:paddingLeft="10dp"
             android:text="MODE"
@@ -48,14 +48,14 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/borderline"
             android:text="Normal"
-            android:buttonTint="@color/design_default_color_primary"/>
+            android:buttonTint="@color/focus_blue"/>
 
         <RadioButton
             android:id="@+id/focus_mode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Focus"
-            android:buttonTint="@color/design_default_color_primary"/>
+            android:buttonTint="@color/focus_blue"/>
 
 
     </RadioGroup>
@@ -70,6 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radio_group"
         tools:ignore="SmallSp"
+        android:textColor="@color/focus_blue"
         android:id="@+id/apply"/>
     <Button
         style="@style/Widget.Material3.Button.TextButton"
@@ -77,10 +78,12 @@
         android:layout_height="wrap_content"
         android:textSize="15dp"
         android:text="CANCEL"
+        android:textColor="@color/focus_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/apply"
         app:layout_constraintTop_toBottomOf="@+id/radio_group"
         tools:ignore="SmallSp"
-        android:id="@+id/cancel"/>
+        android:id="@+id/cancel"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
